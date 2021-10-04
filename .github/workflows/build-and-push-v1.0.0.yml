@@ -66,7 +66,7 @@ jobs:
       - name: Push container image
         run: |
           cd $BUILD_TARGET_DIR
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username "${{ github.repository_owner }}" --password-stdin ghcr.io
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username "${{ github.actor }}" --password-stdin ghcr.io
           make push
           
       - name: Collect evidence
