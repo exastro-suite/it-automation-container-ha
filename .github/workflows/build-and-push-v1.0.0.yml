@@ -1,0 +1,83 @@
+name: Build and push - ver.1.0.0
+on:
+  workflow_dispatch:
+    inputs:
+      EXASTRO_ITA_VER:
+        description: Version number
+        required: true
+        default: '1.8.1'
+        
+      EXASTRO_ITA_LANG:
+        description: Web UI Languages
+        required: true
+        default: '["ja"]'
+
+      DISTRO_SYMBOL:
+        description: Base image symbols
+        required: true
+        default: '["centos8"]'
+        
+      IMAGE_NAME:
+        description: Image repository name
+        required: true
+        default: it-automation
+
+      # Example: https://github.com/exastro-suite/it-automation/archive/refs/heads/v1.8.1.tar.gz
+      EXASTRO_ITA_INSTALLER_URL:
+        description: Installer URL
+        required: false
+
+      # Example: it-automation-1.8.1
+      EXASTRO_ITA_UNPACK_DIR_NAME:
+        description: Installer unpack dir name
+        required: false
+        
+jobs:
+  build_and_push_image:
+    name: Build and push image
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        EXASTRO_ITA_LANG:  ${{ fromJSON(github.event.inputs.EXASTRO_ITA_LANG) }}
+        DISTRO_SYMBOL: ${{ fromJSON(github.event.inputs.DISTRO_SYMBOL) }}
+    steps:
+      - name: Set environment variables
+        run: |
+          function set_github_env() {
+            if [ -n "$2" ]; then
+              echo "$1=$2" >> $GITHUB_ENV
+            fi
+          }
+
+          set_github_env "BUILD_TARGET_DIR" "${{ github.event.inputs.EXASTRO_ITA_VER }}/${{ github.event.inputs.IMAGE_NAME }}/${{ matrix.DISTRO_SYMBOL }}"
+          set_github_env "EXASTRO_ITA_LANG" "${{ matrix.EXASTRO_ITA_LANG }}"
+          set_github_env "EXASTRO_ITA_INSTALLER_URL" "${{ github.event.inputs.EXASTRO_ITA_INSTALLER_URL }}"
+          set_github_env "EXASTRO_ITA_UNPACK_DIR_NAME" "${{ github.event.inputs.EXASTRO_ITA_UNPACK_DIR_NAME }}"
+          set_github_env "IMAGE_HOST_AND_PATH" "ghcr.io/${{ github.repository_owner }}/"
+        
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build container image
+        run: |
+          cd $BUILD_TARGET_DIR
+          make build
+
+      - name: Push container image
+        run: |
+          cd $BUILD_TARGET_DIR
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username "${{ github.repository_owner }}" --password-stdin ghcr.io
+          make push
+          
+      - name: Collect evidence
+        if: ${{ always() }}
+        run: |
+          cd $BUILD_TARGET_DIR
+          make evidence
+          
+      - name: Upload evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: evidence-${{ matrix.EXASTRO_ITA_LANG }}-${{ matrix.DISTRO_SYMBOL }}
+          path: ${{ github.workspace }}/${{ env.BUILD_TARGET_DIR }}/tmp/
