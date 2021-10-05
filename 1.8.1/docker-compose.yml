@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  "it-automation-nfs":
+    image: it-automation-nfs:1.8.1-ja-centos8
+    container_name: it-automation-nfs
+    privileged: true
+    restart: on-failure
+
+  "it-automation-mariadb":
+    image: it-automation-mariadb:1.8.1-ja-centos8
+    container_name: it-automation-mariadb
+    privileged: true
+    restart: on-failure
+
+  "it-automation-backyard":
+    image: it-automation-backyard:1.8.1-ja-centos8
+    container_name: it-automation-backyard
+    privileged: true
+    restart: on-failure
+
+  "it-automation-webapp":
+    image: it-automation-webapp:1.8.1-ja-centos8
+    container_name: it-automation-webapp
+    privileged: true
+    extra_hosts:
+      - "exastro-it-automation:127.0.0.1"
+    ports:
+      - "8080:80"
+      - "10443:443"
+    restart: on-failure
+
+  "it-automation-ansible":
+    image: it-automation-ansible:1.8.1-ja-centos8
+    container_name: it-automation-ansible
+    privileged: true
+    restart: on-failure
+
+  "it-automation-terraform":
+    image: it-automation-terraform:1.8.1-ja-centos8
+    container_name: it-automation-terraform
+    privileged: true
+    restart: on-failure
