@@ -1,26 +1,17 @@
 version: "3.8"
 services:
-  "it-automation-nfs":
-    image: it-automation-nfs:1.8.1-ja-centos8
-    container_name: it-automation-nfs
-    privileged: true
-    restart: on-failure
-
   "it-automation-mariadb":
     image: it-automation-mariadb:1.8.1-ja-centos8
-    container_name: it-automation-mariadb
+    container_name: it-automation-mariadb-1.8.1-ja-centos8-builder
     privileged: true
     restart: on-failure
-
-  "it-automation-backyard":
-    image: it-automation-backyard:1.8.1-ja-centos8
-    container_name: it-automation-backyard
-    privileged: true
-    restart: on-failure
+    volumes:
+      - exastro-database:/exastro-database-volume
+      - exastro-file:/exastro-file-volume
 
   "it-automation-webapp":
     image: it-automation-webapp:1.8.1-ja-centos8
-    container_name: it-automation-webapp
+    container_name: it-automation-webapp-1.8.1-ja-centos8-builder
     privileged: true
     extra_hosts:
       - "exastro-it-automation:127.0.0.1"
@@ -28,15 +19,36 @@ services:
       - "8080:80"
       - "10443:443"
     restart: on-failure
+    depends_on:
+      - it-automation-mariadb
+    volumes:
+      - exastro-database:/exastro-database-volume
+      - exastro-file:/exastro-file-volume
+
+  "it-automation-backyard":
+    image: it-automation-backyard:1.8.1-ja-centos8
+    container_name: it-automation-backyard-1.8.1-ja-centos8-builder
+    privileged: true
+    restart: on-failure
+    depends_on:
+      - it-automation-webapp
+    volumes:
+      - exastro-database:/exastro-database-volume
+      - exastro-file:/exastro-file-volume
 
   "it-automation-ansible":
     image: it-automation-ansible:1.8.1-ja-centos8
-    container_name: it-automation-ansible
+    container_name: it-automation-ansible-1.8.1-ja-centos8-builder
     privileged: true
     restart: on-failure
+    depends_on:
+      - it-automation-backyard
+    volumes:
+      - exastro-database:/exastro-database-volume
+      - exastro-file:/exastro-file-volume
 
-  "it-automation-terraform":
-    image: it-automation-terraform:1.8.1-ja-centos8
-    container_name: it-automation-terraform
-    privileged: true
-    restart: on-failure
+volumes:
+  exastro-database:
+    name: exastro-database-volume
+  exastro-file:
+    name: exastro-file-volume
