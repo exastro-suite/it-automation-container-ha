@@ -7,20 +7,20 @@ on:
         required: true
         default: '1.8.1'
         
-      EXASTRO_ITA_LANG:
+      EXASTRO_ITA_LANGS:
         description: Web UI Languages
         required: true
         default: '["ja"]'
 
-      DISTRO_SYMBOL:
+      DISTRO_SYMBOLS:
         description: Base image symbols
         required: true
         default: '["centos8"]'
         
-      IMAGE_NAME:
+      IMAGE_NAMES:
         description: Image repository name
         required: true
-        default: it-automation
+        default: '["it-automation-webapp", "it-automation-backyard", "it-automation-mariadb", "it-automation-ansible"]'
 
       # Example: https://github.com/exastro-suite/it-automation/archive/refs/heads/v1.8.1.tar.gz
       EXASTRO_ITA_INSTALLER_URL:
@@ -38,8 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        EXASTRO_ITA_LANG:  ${{ fromJSON(github.event.inputs.EXASTRO_ITA_LANG) }}
-        DISTRO_SYMBOL: ${{ fromJSON(github.event.inputs.DISTRO_SYMBOL) }}
+        EXASTRO_ITA_LANG:  ${{ fromJSON(github.event.inputs.EXASTRO_ITA_LANGS) }}
+        DISTRO_SYMBOL: ${{ fromJSON(github.event.inputs.DISTRO_SYMBOLS) }}
+        IMAGE_NAME: ${{ fromJSON(github.event.inputs.IMAGE_NAMES) }}
     steps:
       - name: Set environment variables
         run: |
@@ -49,7 +50,7 @@ jobs:
             fi
           }
 
-          set_github_env "BUILD_TARGET_DIR" "${{ github.event.inputs.EXASTRO_ITA_VER }}/${{ github.event.inputs.IMAGE_NAME }}/${{ matrix.DISTRO_SYMBOL }}"
+          set_github_env "BUILD_TARGET_DIR" "${{ github.event.inputs.EXASTRO_ITA_VER }}/${{ matrix.IMAGE_NAME }}/${{ matrix.DISTRO_SYMBOL }}"
           set_github_env "EXASTRO_ITA_LANG" "${{ matrix.EXASTRO_ITA_LANG }}"
           set_github_env "EXASTRO_ITA_INSTALLER_URL" "${{ github.event.inputs.EXASTRO_ITA_INSTALLER_URL }}"
           set_github_env "EXASTRO_ITA_UNPACK_DIR_NAME" "${{ github.event.inputs.EXASTRO_ITA_UNPACK_DIR_NAME }}"
