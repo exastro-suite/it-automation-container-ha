@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: exastro-database-volume
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.197.17.186
+    path: /exastro-database/database
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: exastro-database-volume
+  labels:
+    app: exastro-database-volume
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

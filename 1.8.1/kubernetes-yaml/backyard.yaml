@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backyard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backyard
+  template:
+    metadata:
+      labels:
+        app: backyard
+    spec:
+      containers:
+      - name: backyard
+        image: it-automation-backyard:1.8.1-ja-centos8
+        ports:
+        - containerPort: 80
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - name: exastro-file-volume
+            mountPath: /exastro-file-volume
+      volumes:
+      - name: exastro-file-volume
+        persistentVolumeClaim:
+          claimName: exastro-file-volume
+      terminationGracePeriodSeconds: 10
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backyard-np
+spec:
+  selector:
+    app: backyard
+  ports:
+  - port: 80
