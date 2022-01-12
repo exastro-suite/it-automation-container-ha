@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backyard
+  namespace: itaha01
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backyard
+  template:
+    metadata:
+      labels:
+        app: backyard
+    spec:
+      containers:
+      - name: backyard
+        image: it-automation-backyard:1.8.1-ja-centos8
+        envFrom:
+        - configMapRef:
+            name: cm-data
+        - prefix:
+          secretRef:
+            name: secret-data
+        ports:
+        - containerPort: 80
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - name: exastro-file-pv
+            mountPath: /exastro-file-volume
+#            mountPath: /exastro-file
+      volumes:
+      - name: exastro-file-pv
+        persistentVolumeClaim:
+          claimName: exastro-file-pvc
+      terminationGracePeriodSeconds: 10

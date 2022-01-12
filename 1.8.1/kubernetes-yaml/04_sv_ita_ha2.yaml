@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-np2
+  namespace: itaha01
+spec:
+  selector:
+    app: mariadb
+  ports:
+  - port: 3306
+    targetPort: 3306
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-np2
+  namespace: itaha01
+spec:
+  selector:
+    app: webapp
+  ports:
+  - port: 80
+    nodePort: 30081
+  type: NodePort
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backyard-np2
+  namespace: itaha01
+spec:
+  selector:
+    app: backyard
+  ports:
+  - port: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ansible-np2
+  namespace: itaha01
+spec:
+  selector:
+    app: ansible
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+  - name: https
+    protocol: TCP
+    port: 443

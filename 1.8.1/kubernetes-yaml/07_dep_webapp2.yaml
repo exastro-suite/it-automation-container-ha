@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp2
+  namespace: itaha01
+spec:
+  replicas: 1
+#  replicas: 2
+  selector:
+    matchLabels:
+      app: webapp2
+  template:
+    metadata:
+      labels:
+        app: webapp2
+    spec:
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "exastro-it-automation"
+      containers:
+      - name: webapp2
+        image: it-automation-webapp:1.8.1-ja-centos8
+        envFrom:
+        - configMapRef:
+            name: cm-data2
+        - prefix:
+          secretRef:
+            name: secret-data
+        ports:
+        - containerPort: 80
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - name: exastro-file2
+            mountPath: /exastro-file2
+      volumes:
+      - name: exastro-file2
+        persistentVolumeClaim:
+          claimName: exastro-file2
+      terminationGracePeriodSeconds: 10

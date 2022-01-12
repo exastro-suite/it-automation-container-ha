@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: itaha01
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: it-automation-mariadb:1.8.1-ja-centos8
+        ports:
+        - containerPort: 3306
+        securityContext:
+          privileged: true      
+        volumeMounts:
+          - name: exastro-database-pv
+            mountPath: /exastro-database-volume
+#            mountPath: /exastro-database
+      volumes:
+      - name: exastro-database-pv
+        persistentVolumeClaim:
+          claimName: exastro-database-pvc
+      terminationGracePeriodSeconds: 10
