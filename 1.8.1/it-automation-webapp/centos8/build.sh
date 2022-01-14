@@ -82,7 +82,6 @@ mkdir -p ${EXASTRO_ITA_INSTALL_DIR}/data_relay_storage
 mkdir -p ${EXASTRO_ITA_INSTALL_DIR}/ita-root/webroot/menus
 mkdir -p ${EXASTRO_ITA_INSTALL_DIR}/ita-root/webconfs
 mkdir -p ${EXASTRO_ITA_INSTALL_DIR}/ita-root/confs
-mkdir -m 777 ${EXASTRO_ITA_INSTALL_DIR}/ita_sessions
 
 mkdir -p /exastro-file-volume/data_relay_storage/ansible_driver
 mkdir -p /exastro-file-volume/data_relay_storage/conductor
