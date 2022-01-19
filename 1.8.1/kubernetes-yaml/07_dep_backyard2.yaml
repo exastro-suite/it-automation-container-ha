@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: backyard2
   namespace: itaha01
+  labels:
+    app: backyard2
 spec:
   replicas: 1
   selector:
@@ -27,10 +29,10 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
-          - name: exastro-file2
-            mountPath: /exastro-file2
+          - name: exastro-file-pv2
+            mountPath: /exastro-file-volume
       volumes:
-      - name: exastro-file2
+      - name: exastro-file-pv2
         persistentVolumeClaim:
-          claimName: exastro-file2
+          claimName: exastro-file-pvc2
       terminationGracePeriodSeconds: 10

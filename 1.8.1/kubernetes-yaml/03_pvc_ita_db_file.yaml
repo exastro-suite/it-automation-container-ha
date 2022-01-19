@@ -3,14 +3,13 @@ kind: PersistentVolumeClaim
 metadata:
   name: exastro-database-pvc
   namespace: itaha01
-  labels:
-    app: exastro-database-pvc
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 1Gi
+  volumeName: exastro-database-pv
 
 ---
 
@@ -19,11 +18,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: exastro-file-pvc
   namespace: itaha01
-  labels:
-    app: exastro-file-pvc
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 1Gi
+  volumeName: exastro-file-pv

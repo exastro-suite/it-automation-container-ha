@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: mariadb
   namespace: itaha01
+  labels:
+    app: mariadb
 spec:
   replicas: 1
   selector:
@@ -23,7 +25,6 @@ spec:
         volumeMounts:
           - name: exastro-database-pv
             mountPath: /exastro-database-volume
-#            mountPath: /exastro-database
       volumes:
       - name: exastro-database-pv
         persistentVolumeClaim:

@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: backyard
   namespace: itaha01
+  labels:
+    app: backyard
 spec:
   replicas: 1
   selector:
@@ -29,7 +31,6 @@ spec:
         volumeMounts:
           - name: exastro-file-pv
             mountPath: /exastro-file-volume
-#            mountPath: /exastro-file
       volumes:
       - name: exastro-file-pv
         persistentVolumeClaim:

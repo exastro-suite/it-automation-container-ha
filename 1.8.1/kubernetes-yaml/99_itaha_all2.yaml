@@ -8,7 +8,7 @@ metadata:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: exastro-database-pv
+  name: exastro-database-pv2
 spec:
   capacity:
     storage: 1Gi
@@ -16,14 +16,14 @@ spec:
     - ReadWriteMany
   nfs:
     server: 10.197.17.186
-    path: /exastro-database
+    path: /exastro-database2
 
 ---
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: exastro-file-pv
+  name: exastro-file-pv2
 spec:
   capacity:
     storage: 1Gi
@@ -31,14 +31,14 @@ spec:
     - ReadWriteMany
   nfs:
     server: 10.197.17.186
-    path: /exastro-file
+    path: /exastro-file2
 
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: exastro-database-pvc
+  name: exastro-database-pvc2
   namespace: itaha01
 spec:
   accessModes:
@@ -46,14 +46,14 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  volumeName: exastro-database-pv
+  volumeName: exastro-database-pv2
 
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: exastro-file-pvc
+  name: exastro-file-pvc2
   namespace: itaha01
 spec:
   accessModes:
@@ -61,18 +61,18 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  volumeName: exastro-file-pv
+  volumeName: exastro-file-pv2
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: mariadb-np
+  name: mariadb-np2
   namespace: itaha01
 spec:
   selector:
-    app: mariadb
+    app: mariadb2
   ports:
   - port: 3306
     targetPort: 3306
@@ -82,14 +82,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: webapp-np
+  name: webapp-np2
   namespace: itaha01
 spec:
   selector:
-    app: webapp
+    app: webapp2
   ports:
   - port: 80
-    nodePort: 30080
+    nodePort: 30081
   type: NodePort
 
 ---
@@ -110,11 +110,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ansible-np
+  name: ansible-np2
   namespace: itaha01
 spec:
   selector:
-    app: ansible
+    app: ansible2
   ports:
   - name: http
     port: 80
@@ -126,11 +126,11 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cm-data
+  name: cm-data2
   namespace: itaha01
 data:
   EXASTRO_ITA_INSTALL_DIR: /exastro
-  EXASTRO_ITA_DB_CONTAINER_NAME: mariadb-np
+  EXASTRO_ITA_DB_CONTAINER_NAME: mariadb-np2
   EXASTRO_ITA_DB_USERNAME: ita_db_user
 
 ---
@@ -149,22 +149,22 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ansible
+  name: ansible2
   namespace: itaha01
   labels:
-    app: ansible
+    app: ansible2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ansible
+      app: ansible2
   template:
     metadata:
       labels:
-        app: ansible
+        app: ansible2
     spec:
       containers:
-      - name: ansible
+      - name: ansible2
         image: it-automation-ansible:1.8.1-ja-centos8
         ports:
         - containerPort: 80
@@ -172,12 +172,12 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
-          - name: exastro-file-pv
+          - name: exastro-file-pv2
             mountPath: /exastro-file-volume
       volumes:
-      - name: exastro-file-pv
+      - name: exastro-file-pv2
         persistentVolumeClaim:
-          claimName: exastro-file-pvc
+          claimName: exastro-file-pvc2
       terminationGracePeriodSeconds: 10
 
 ---
@@ -185,26 +185,26 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backyard
+  name: backyard2
   namespace: itaha01
   labels:
-    app: backyard
+    app: backyard2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backyard
+      app: backyard2
   template:
     metadata:
       labels:
-        app: backyard
+        app: backyard2
     spec:
       containers:
-      - name: backyard
+      - name: backyard2
         image: it-automation-backyard:1.8.1-ja-centos8
         envFrom:
         - configMapRef:
-            name: cm-data
+            name: cm-data2
         - prefix:
           secretRef:
             name: secret-data
@@ -213,12 +213,12 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
-          - name: exastro-file-pv
+          - name: exastro-file-pv2
             mountPath: /exastro-file-volume
       volumes:
-      - name: exastro-file-pv
+      - name: exastro-file-pv2
         persistentVolumeClaim:
-          claimName: exastro-file-pvc
+          claimName: exastro-file-pvc2
       terminationGracePeriodSeconds: 10
 
 ---
@@ -226,34 +226,34 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mariadb
+  name: mariadb2
   namespace: itaha01
   labels:
-    app: mariadb
+    app: mariadb2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mariadb
+      app: mariadb2
   template:
     metadata:
       labels:
-        app: mariadb
+        app: mariadb2
     spec:
       containers:
-      - name: mariadb
+      - name: mariadb2
         image: it-automation-mariadb:1.8.1-ja-centos8
         ports:
         - containerPort: 3306
         securityContext:
           privileged: true      
         volumeMounts:
-          - name: exastro-database-pv
+          - name: exastro-database-pv2
             mountPath: /exastro-database-volume
       volumes:
-      - name: exastro-database-pv
+      - name: exastro-database-pv2
         persistentVolumeClaim:
-          claimName: exastro-database-pvc
+          claimName: exastro-database-pvc2
       terminationGracePeriodSeconds: 10
 
 ---
@@ -261,31 +261,31 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapp
+  name: webapp2
   namespace: itaha01
   labels:
-    app: webapp
+    app: webapp2
 spec:
 #  replicas: 1
   replicas: 2
   selector:
     matchLabels:
-      app: webapp
+      app: webapp2
   template:
     metadata:
       labels:
-        app: webapp
+        app: webapp2
     spec:
       hostAliases:
       - ip: "127.0.0.1"
         hostnames:
         - "exastro-it-automation"
       containers:
-      - name: webapp
+      - name: webapp2
         image: it-automation-webapp:1.8.1-ja-centos8
         envFrom:
         - configMapRef:
-            name: cm-data
+            name: cm-data2
         - prefix:
           secretRef:
             name: secret-data
@@ -294,10 +294,10 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
-          - name: exastro-file-pv
+          - name: exastro-file-pv2
             mountPath: /exastro-file-volume
       volumes:
-      - name: exastro-file-pv
+      - name: exastro-file-pv2
         persistentVolumeClaim:
-          claimName: exastro-file-pvc
+          claimName: exastro-file-pvc2
       terminationGracePeriodSeconds: 10

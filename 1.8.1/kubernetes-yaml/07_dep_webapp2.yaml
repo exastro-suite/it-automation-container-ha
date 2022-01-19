@@ -3,9 +3,11 @@ kind: Deployment
 metadata:
   name: webapp2
   namespace: itaha01
+  labels:
+    app: webapp2
 spec:
-  replicas: 1
-#  replicas: 2
+#  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: webapp2
@@ -32,10 +34,10 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
-          - name: exastro-file2
-            mountPath: /exastro-file2
+          - name: exastro-file-pv2
+            mountPath: /exastro-file-volume
       volumes:
-      - name: exastro-file2
+      - name: exastro-file-pv2
         persistentVolumeClaim:
-          claimName: exastro-file2
+          claimName: exastro-file-pvc2
       terminationGracePeriodSeconds: 10

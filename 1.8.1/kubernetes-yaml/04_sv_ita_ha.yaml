@@ -50,8 +50,6 @@ spec:
     app: ansible
   ports:
   - name: http
-#    protocol: TCP
     port: 80
   - name: https
-#    protocol: TCP
     port: 443
