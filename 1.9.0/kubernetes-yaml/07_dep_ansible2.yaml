@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ansible2
+  namespace: itaha01
+  labels:
+    app: ansible2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ansible2
+  template:
+    metadata:
+      labels:
+        app: ansible2
+    spec:
+      containers:
+      - name: ansible2
+        image: it-automation-ansible:1.8.1-ja-centos8
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - name: exastro-file-pv2
+            mountPath: /exastro-file-volume
+      volumes:
+      - name: exastro-file-pv2
+        persistentVolumeClaim:
+          claimName: exastro-file-pvc2
+      terminationGracePeriodSeconds: 10
