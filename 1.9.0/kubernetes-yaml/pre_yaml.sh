@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #template_cp
-\cp -pf 99_itaha_all_template.yaml 99_itaha_all_test.yaml
+\cp -pf 99_itaha_all_template.yaml 99_itaha_all.yaml
 
 #nfs_server_ip
 aft_pv_nfs_ip=xxx.xxx.xxx.xxx
