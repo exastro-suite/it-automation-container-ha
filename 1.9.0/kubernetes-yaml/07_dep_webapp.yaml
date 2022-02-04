@@ -6,7 +6,6 @@ metadata:
   labels:
     app: webapp
 spec:
-#  replicas: 1
   replicas: 2
   selector:
     matchLabels:
@@ -22,7 +21,7 @@ spec:
         - "exastro-it-automation"
       containers:
       - name: webapp
-        image: it-automation-webapp:1.8.1-ja-centos8
+        image: it-automation-webapp:1.9.0-ja-centos8
         envFrom:
         - configMapRef:
             name: cm-data

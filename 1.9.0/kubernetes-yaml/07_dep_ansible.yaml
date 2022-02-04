@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: ansible
-        image: it-automation-ansible:1.8.1-ja-centos8
+        image: it-automation-ansible:1.9.0-ja-centos8
         ports:
         - containerPort: 80
         - containerPort: 443
@@ -31,3 +31,6 @@ spec:
         persistentVolumeClaim:
           claimName: exastro-file-pvc
       terminationGracePeriodSeconds: 10
+
+---
+

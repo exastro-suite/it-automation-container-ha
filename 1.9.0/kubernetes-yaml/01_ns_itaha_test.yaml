@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: itaha01
+  name: 30080
 
 ---
 

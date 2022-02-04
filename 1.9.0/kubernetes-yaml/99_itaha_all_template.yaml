@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: itaha01
+  name: ${bef_ns_name}
 
 ---
 
@@ -15,8 +15,8 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    server: 10.197.17.186
-    path: /exastro-database
+    server: ${bef_pv_nfs_ip}
+    path: ${bef_pv_db_path}
 
 ---
 
@@ -30,8 +30,8 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    server: 10.197.17.186
-    path: /exastro-file
+    server: ${bef_pv_nfs_ip}
+    path: ${bef_pv_file_path}
 
 ---
 
@@ -39,7 +39,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: exastro-database-pvc
-  namespace: itaha01
+  namespace: ${bef_ns_name}
 spec:
   accessModes:
     - ReadWriteMany
@@ -54,7 +54,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: exastro-file-pvc
-  namespace: itaha01
+  namespace: ${bef_ns_name}
 spec:
   accessModes:
     - ReadWriteMany
@@ -68,8 +68,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mariadb-np
-  namespace: itaha01
+  name: ${bef_cm_dbname}
+  namespace: ${bef_ns_name}
 spec:
   selector:
     app: mariadb
@@ -83,13 +83,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: webapp-np
-  namespace: itaha01
+  namespace: ${bef_ns_name}
 spec:
   selector:
     app: webapp
   ports:
   - port: 80
-    nodePort: 30080
+    nodePort: ${bef_svc_webapp_nodeport}
   type: NodePort
 
 ---
@@ -98,7 +98,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ansible-np
-  namespace: itaha01
+  namespace: ${bef_ns_name}
 spec:
   selector:
     app: ansible
@@ -114,10 +114,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cm-data
-  namespace: itaha01
+  namespace: ${bef_ns_name}
 data:
-  EXASTRO_ITA_DB_SERVICE_NAME: mariadb-np
-  EXASTRO_ITA_DB_USERNAME: ita_db_user
+  EXASTRO_ITA_DB_SERVICE_NAME: ${bef_cm_dbname}
+  EXASTRO_ITA_DB_USERNAME: ${bef_cm_ita_db_username}
 
 ---
 
@@ -125,10 +125,10 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: secret-data
-  namespace: itaha01
+  namespace: ${bef_ns_name}
 type: Opaque
 data:
-  EXASTRO_ITA_DB_PASSWORD: aXRhX2RiX3Bhc3N3b3Jk
+  EXASTRO_ITA_DB_PASSWORD: ${bef_secret_ita_db_password}
 
 ---
 
@@ -136,7 +136,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ansible
-  namespace: itaha01
+  namespace: ${bef_ns_name}
   labels:
     app: ansible
 spec:
@@ -151,7 +151,7 @@ spec:
     spec:
       containers:
       - name: ansible
-        image: it-automation-ansible:1.9.0-ja-centos8
+        image: it-automation-ansible:${bef_dep_ita_version}-ja-${bef_dep_os}
         ports:
         - containerPort: 80
         - containerPort: 443
@@ -172,7 +172,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backyard
-  namespace: itaha01
+  namespace: ${bef_ns_name}
   labels:
     app: backyard
 spec:
@@ -187,7 +187,7 @@ spec:
     spec:
       containers:
       - name: backyard
-        image: it-automation-backyard:1.9.0-ja-centos8
+        image: it-automation-backyard:${bef_dep_ita_version}-ja-${bef_dep_os}
         envFrom:
         - configMapRef:
             name: cm-data
@@ -213,7 +213,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mariadb
-  namespace: itaha01
+  namespace: ${bef_ns_name}
   labels:
     app: mariadb
 spec:
@@ -228,11 +228,11 @@ spec:
     spec:
       containers:
       - name: mariadb
-        image: it-automation-mariadb:1.9.0-ja-centos8
+        image: it-automation-mariadb:${bef_dep_ita_version}-ja-${bef_dep_os}
         ports:
         - containerPort: 3306
         securityContext:
-          privileged: true      
+          privileged: true
         volumeMounts:
           - name: exastro-database-pv
             mountPath: /exastro-database-volume
@@ -248,11 +248,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webapp
-  namespace: itaha01
+  namespace: ${bef_ns_name}
   labels:
     app: webapp
 spec:
-  replicas: 2
+  replicas: ${bef_dep_webapp_replicas}
   selector:
     matchLabels:
       app: webapp
@@ -267,7 +267,7 @@ spec:
         - "exastro-it-automation"
       containers:
       - name: webapp
-        image: it-automation-webapp:1.9.0-ja-centos8
+        image: it-automation-webapp:${bef_dep_ita_version}-ja-${bef_dep_os}
         envFrom:
         - configMapRef:
             name: cm-data

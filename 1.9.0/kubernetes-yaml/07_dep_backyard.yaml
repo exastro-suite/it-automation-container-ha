@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: backyard
-        image: it-automation-backyard:1.8.1-ja-centos8
+        image: it-automation-backyard:1.9.0-ja-centos8
         envFrom:
         - configMapRef:
             name: cm-data
@@ -36,3 +36,6 @@ spec:
         persistentVolumeClaim:
           claimName: exastro-file-pvc
       terminationGracePeriodSeconds: 10
+
+---
+

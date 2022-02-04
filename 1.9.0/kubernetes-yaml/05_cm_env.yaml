@@ -5,5 +5,10 @@ metadata:
   namespace: itaha01
 data:
   EXASTRO_ITA_INSTALL_DIR: /exastro
-  EXASTRO_ITA_DB_CONTAINER_NAME: mariadb-np
+  EXASTRO_ITA_DB_SERVICE_NAME: mariadb-np
   EXASTRO_ITA_DB_USERNAME: ita_db_user
+#  backyard_image: it-automation-backyard:1.8.1-ja-centos8
+  exastro-file-name: exastro-file-pv
+
+---
+

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: mariadb
-        image: it-automation-mariadb:1.8.1-ja-centos8
+        image: it-automation-mariadb:1.9.0-ja-centos8
         ports:
         - containerPort: 3306
         securityContext:
@@ -30,3 +30,6 @@ spec:
         persistentVolumeClaim:
           claimName: exastro-database-pvc
       terminationGracePeriodSeconds: 10
+
+---
+
