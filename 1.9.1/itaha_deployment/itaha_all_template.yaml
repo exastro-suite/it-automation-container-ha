@@ -151,7 +151,7 @@ spec:
     spec:
       containers:
       - name: ansible
-        image: it-automation-ansible:${bef_dep_ita_version}-ja-${bef_dep_os}
+        image: exastro/it-automation-ha-ansible:${bef_dep_ita_version}-ja
         ports:
         - containerPort: 80
         - containerPort: 443
@@ -187,7 +187,7 @@ spec:
     spec:
       containers:
       - name: backyard
-        image: it-automation-backyard:${bef_dep_ita_version}-ja-${bef_dep_os}
+        image: exastro/it-automation-ha-backyard:${bef_dep_ita_version}-ja
         envFrom:
         - configMapRef:
             name: cm-data
@@ -228,7 +228,7 @@ spec:
     spec:
       containers:
       - name: mariadb
-        image: it-automation-mariadb:${bef_dep_ita_version}-ja-${bef_dep_os}
+        image: exastro/it-automation-ha-mariadb:${bef_dep_ita_version}-ja
         ports:
         - containerPort: 3306
         securityContext:
@@ -270,7 +270,7 @@ spec:
         - "${bef_dep_webapp_terraform_host}"
       containers:
       - name: webapp
-        image: it-automation-webapp:${bef_dep_ita_version}-ja-${bef_dep_os}
+        image: exastro/it-automation-ha-webapp:${bef_dep_ita_version}-ja
         envFrom:
         - configMapRef:
             name: cm-data
