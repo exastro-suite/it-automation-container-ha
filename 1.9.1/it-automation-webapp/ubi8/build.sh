@@ -245,6 +245,9 @@ sed -i -e "s:${REPLACE_CHAR["private_key"]}:${PRIVATE_KEY_FILE}:g" /etc/httpd/co
 
 systemctl restart httpd
 
+rm -f /etc/pki/tls/certs/${EXASTRO_ITA_DOMAIN}.crt
+rm -f /etc/pki/tls/certs/${EXASTRO_ITA_DOMAIN}.key
+
 #git_install
 yum install -y git
 
